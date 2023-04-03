@@ -31,7 +31,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Optional<Usuario> findByEmail(String email) {
-        return this.repository.buscarPorEmail(email);
+        return this.repository.findByEmail(email);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public boolean showExist(String email) {
-        return this.repository.buscarPorEmail(email).isPresent();
+        return this.repository.findByEmail(email).isPresent();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario update(String email, Usuario usuario) {
         Usuario usuarioUpdate;
-        Optional<Usuario> oUsuario= this.repository.buscarPorEmail(email);
+        Optional<Usuario> oUsuario= this.repository.findByEmail(email);
 
         if (oUsuario.isPresent()){
             usuarioUpdate = oUsuario.get();
@@ -76,7 +76,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void delete(String email) {
         Usuario usuario;
-        Optional<Usuario> optionalUsuario = this.repository.buscarPorEmail(email);
+        Optional<Usuario> optionalUsuario = this.repository.findByEmail(email);
         if (optionalUsuario.isEmpty()){
             throw new RuntimeException("El usuario con email " + email + " no existe.");
         } else {

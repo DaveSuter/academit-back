@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface UsuarioJpaRepository extends JpaRepository<Usuario, Integer> {
-    @Query("from Usuario u where u.email = ?1")
-    Optional<Usuario> buscarPorEmail(String email);
+
+    Optional<Usuario> findByEmail(String email);
     //cambiar por findById
 
     Optional<Usuario> findById(int id);

@@ -10,6 +10,10 @@ public class EspectaculoMapper {
         entity.setNombre(dto.getNombre());
         entity.setImgCard(dto.getImgcard());
         entity.setImgBaner(dto.getImgbaner());
+        entity.setDescripcion(dto.getDescripcion());
+        entity.setFecha(dto.getFecha());
+        entity.setRecinto(dto.getRecinto());
+        entity.setGenero(dto.getGenero());
         return entity;
     }
 
@@ -19,6 +23,10 @@ public class EspectaculoMapper {
         dto.setNombre(entity.getNombre());
         dto.setImgcard(entity.getImgCard());
         dto.setImgbaner(entity.getImgBaner());
+        dto.setDescripcion(entity.getDescripcion());
+        dto.setFecha(entity.getFecha());
+        dto.setRecinto(entity.getRecinto());
+        dto.setGenero(entity.getGenero());
         return dto;
     }
 }
