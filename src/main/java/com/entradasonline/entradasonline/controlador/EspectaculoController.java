@@ -56,9 +56,10 @@ public class EspectaculoController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> crearShow(@Valid @RequestBody Espectaculo espectaculo){
+    public ResponseEntity<?> crearShow(@Valid @RequestBody EspectaculoDTO espectaculoDTO){
         Espectaculo eCreado;
         try {
+            Espectaculo espectaculo = EspectaculoMapper.dtoToEntity(espectaculoDTO);
             eCreado = service.save(espectaculo);
         }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e + " : " + e.getMessage());
@@ -67,9 +68,10 @@ public class EspectaculoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editarShow(@PathVariable int id, @RequestBody Espectaculo espectaculo){
+    public ResponseEntity<?> editarShow(@PathVariable int id, @RequestBody EspectaculoDTO espectaculoDTO){
         Espectaculo uEspectaculo;
         try {
+            Espectaculo espectaculo = EspectaculoMapper.dtoToEntity(espectaculoDTO);
             uEspectaculo = service.update(id, espectaculo);
         }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e + " : " + e.getMessage());
