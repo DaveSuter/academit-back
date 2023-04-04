@@ -2,6 +2,7 @@ package com.entradasonline.entradasonline.servicio;
 
 import com.entradasonline.entradasonline.entidad.Espectaculo;
 import com.entradasonline.entradasonline.entidad.Usuario;
+import com.entradasonline.entradasonline.negocio.dto.EspectaculoDTO;
 import com.entradasonline.entradasonline.repositorio.EspectaculoJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +26,10 @@ public class EspectaculoServiceImpl implements EspectaculoService {
 
     @Override
     public List<Espectaculo> getBanners() {
-        List<Espectaculo> allBanners = this.repository.getBanners();
-        return allBanners.subList(0, 3);
+        //List<Espectaculo> allBanners = this.repository.getBanners();
+        //return allBanners.subList(0, 3);
+        List<Espectaculo> banners = this.repository.findTop3ByImgBanerContaining("banner");
+        return banners;
     }
 
     @Override

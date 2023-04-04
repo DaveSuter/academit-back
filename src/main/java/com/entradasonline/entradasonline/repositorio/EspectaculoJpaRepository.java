@@ -17,5 +17,7 @@ public interface EspectaculoJpaRepository extends JpaRepository<Espectaculo, Int
     @Query("from Espectaculo e where e.imgBaner like '%banner%' ")
     List<Espectaculo> getBanners();
 
+    List<Espectaculo> findTop3ByImgBanerContaining(String palabra);
+
 
 }

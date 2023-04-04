@@ -24,9 +24,13 @@ public class EspectaculoController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Espectaculo>> getAllShows(){
+    public ResponseEntity<List<EspectaculoDTO>> getAllShows(){
         List<Espectaculo> espectaculos = this.service.getAll();
-        return ResponseEntity.ok(espectaculos);
+        List<EspectaculoDTO> espectaculoDTOList = espectaculos
+                .stream()
+                .map(EspectaculoMapper::entityToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(espectaculoDTOList);
     }
 
     @GetMapping("/dtos")
