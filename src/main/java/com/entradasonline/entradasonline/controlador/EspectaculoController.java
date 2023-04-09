@@ -1,6 +1,7 @@
 package com.entradasonline.entradasonline.controlador;
 
 import com.entradasonline.entradasonline.entidad.Espectaculo;
+import com.entradasonline.entradasonline.exception.ErrorProcessException;
 import com.entradasonline.entradasonline.negocio.dto.EspectaculoDTO;
 import com.entradasonline.entradasonline.negocio.dto.mapper.EspectaculoMapper;
 import com.entradasonline.entradasonline.servicio.EspectaculoService;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ public class EspectaculoController {
         return ResponseEntity.ok(espectaculoDTOList);
     }
 
+
     @GetMapping("/dtos")
     public ResponseEntity<List<EspectaculoDTO>> getAllShowsDto(){
 
@@ -55,8 +58,9 @@ public class EspectaculoController {
         return ResponseEntity.ok(dtos);
     }
 
+    //@Transactional
     @PostMapping("/")
-    public ResponseEntity<?> crearShow(@Valid @RequestBody EspectaculoDTO espectaculoDTO){
+    public ResponseEntity<?> addShow(@Valid @RequestBody EspectaculoDTO espectaculoDTO) throws ErrorProcessException {
         Espectaculo eCreado;
         try {
             Espectaculo espectaculo = EspectaculoMapper.dtoToEntity(espectaculoDTO);

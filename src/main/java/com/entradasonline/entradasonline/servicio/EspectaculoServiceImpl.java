@@ -1,11 +1,7 @@
 package com.entradasonline.entradasonline.servicio;
 
 import com.entradasonline.entradasonline.entidad.Espectaculo;
-import com.entradasonline.entradasonline.entidad.Usuario;
-import com.entradasonline.entradasonline.negocio.dto.EspectaculoDTO;
 import com.entradasonline.entradasonline.repositorio.EspectaculoJpaRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
