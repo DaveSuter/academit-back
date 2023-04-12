@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,27 +25,10 @@ public class EspectaculoController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<EspectaculoDTO>> getAllShows(){
-        List<Espectaculo> espectaculos = this.service.getAll();
-        List<EspectaculoDTO> espectaculoDTOList = espectaculos
-                .stream()
-                .map(EspectaculoMapper::entityToDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(espectaculoDTOList);
+    public ResponseEntity<List<EspectaculoDTO>> getAllShows() throws ErrorProcessException {
+        return ResponseEntity.ok(service.getAll());
     }
 
-
-    @GetMapping("/dtos")
-    public ResponseEntity<List<EspectaculoDTO>> getAllShowsDto(){
-
-        List<Espectaculo> espectaculos = this.service.getAll();
-        List<EspectaculoDTO> dtos = espectaculos
-                .stream()
-                .map(EspectaculoMapper::entityToDto)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(dtos);
-    }
 
     @GetMapping("/banners")
     public ResponseEntity<List<EspectaculoDTO>> getBannerShows(){
@@ -58,7 +40,7 @@ public class EspectaculoController {
         return ResponseEntity.ok(dtos);
     }
 
-    //@Transactional
+
     @PostMapping("/")
     public ResponseEntity<?> addShow(@Valid @RequestBody EspectaculoDTO espectaculoDTO) throws ErrorProcessException {
         Espectaculo eCreado;

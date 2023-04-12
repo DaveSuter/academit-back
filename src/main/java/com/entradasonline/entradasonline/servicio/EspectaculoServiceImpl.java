@@ -1,23 +1,34 @@
 package com.entradasonline.entradasonline.servicio;
 
 import com.entradasonline.entradasonline.entidad.Espectaculo;
+import com.entradasonline.entradasonline.exception.ErrorProcessException;
+import com.entradasonline.entradasonline.negocio.dto.EspectaculoDTO;
+import com.entradasonline.entradasonline.negocio.dto.mapper.EspectaculoMapper;
 import com.entradasonline.entradasonline.repositorio.EspectaculoJpaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EspectaculoServiceImpl implements EspectaculoService {
+
+    private final String ERROR_NOT_FOUND = "An error occurred in the process: ";
     private final EspectaculoJpaRepository repository;
 
-    public EspectaculoServiceImpl(EspectaculoJpaRepository repository) {
-        this.repository = repository;
-    }
-
     @Override
-    public List<Espectaculo> getAll() {
-        return this.repository.getAll();
+    public List<EspectaculoDTO> getAll() throws ErrorProcessException {
+        try {
+            return repository.getAll().stream()
+                    .map(EspectaculoMapper::entityToDto)
+                    .collect(Collectors.toList());
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ERROR_NOT_FOUND + ex.getMessage());
+        }
     }
 
     @Override
@@ -43,6 +54,7 @@ public class EspectaculoServiceImpl implements EspectaculoService {
         return this.repository.buscarPorNombre(nombre).isPresent();
     }
 
+    @Transactional
     @Override
     public Espectaculo save(Espectaculo espectaculo) {
         if (this.showExist(espectaculo.getNombre())){
@@ -51,6 +63,7 @@ public class EspectaculoServiceImpl implements EspectaculoService {
         return this.repository.save(espectaculo);
     }
 
+    @Transactional
     @Override
     public Espectaculo update(int id, Espectaculo espectaculo) {
         Espectaculo espectaculoUpdate;
@@ -72,6 +85,7 @@ public class EspectaculoServiceImpl implements EspectaculoService {
         return this.repository.save(espectaculoUpdate);
     }
 
+    @Transactional
     @Override
     public void delete(int id) {
         Espectaculo espectaculo;

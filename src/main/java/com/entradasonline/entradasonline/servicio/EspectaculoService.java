@@ -2,13 +2,15 @@ package com.entradasonline.entradasonline.servicio;
 
 
 import com.entradasonline.entradasonline.entidad.Espectaculo;
+import com.entradasonline.entradasonline.exception.ErrorProcessException;
+import com.entradasonline.entradasonline.negocio.dto.EspectaculoDTO;
 
 
 import java.util.List;
 import java.util.Optional;
 
 public interface EspectaculoService {
-    List<Espectaculo> getAll();
+    List<EspectaculoDTO> getAll() throws ErrorProcessException;
     List<Espectaculo> getBanners();
     Optional<Espectaculo> findById(int id);
     Optional<Espectaculo>findByNombre(String nombre);

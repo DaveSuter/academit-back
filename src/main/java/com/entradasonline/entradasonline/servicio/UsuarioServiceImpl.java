@@ -4,20 +4,17 @@ import com.entradasonline.entradasonline.entidad.DatosUsuario;
 import com.entradasonline.entradasonline.entidad.Usuario;
 import com.entradasonline.entradasonline.repositorio.DatosUsuarioJpaRepository;
 import com.entradasonline.entradasonline.repositorio.UsuarioJpaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
     private  final UsuarioJpaRepository repository;
     private final DatosUsuarioJpaRepository datosRepository;
-
-    public UsuarioServiceImpl(UsuarioJpaRepository repository, DatosUsuarioJpaRepository datosRepository) {
-        this.repository = repository;
-        this.datosRepository = datosRepository;
-    }
 
     @Override
     public List<Usuario> getAll() {
