@@ -12,12 +12,14 @@ public interface EspectaculoJpaRepository extends JpaRepository<Espectaculo, Int
     @Query("from Espectaculo")
     List<Espectaculo> getAll();
     @Query("from Espectaculo s where s.nombre = ?1")
-    Optional<Espectaculo> buscarPorNombre(String nombre);
+    Espectaculo buscarPorNombre(String nombre);
     Espectaculo save(Espectaculo espectaculo);
     @Query("from Espectaculo e where e.imgBaner like '%banner%' ")
     List<Espectaculo> getBanners();
 
     List<Espectaculo> findTop3ByImgBanerContaining(String palabra);
 
+    Optional<Espectaculo> findByIdshow(int id);
+    Optional<Espectaculo> findByNombre(String nombre);
 
 }

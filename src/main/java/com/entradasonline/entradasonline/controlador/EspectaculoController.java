@@ -5,6 +5,7 @@ import com.entradasonline.entradasonline.exception.ErrorProcessException;
 import com.entradasonline.entradasonline.negocio.dto.EspectaculoDTO;
 import com.entradasonline.entradasonline.negocio.dto.mapper.EspectaculoMapper;
 import com.entradasonline.entradasonline.servicio.EspectaculoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,63 +16,37 @@ import java.util.stream.Collectors;
 
 @CrossOrigin("http://localhost:4200")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/shows")
 public class EspectaculoController {
 
     private final EspectaculoService service;
-
-    public EspectaculoController(EspectaculoService service) {
-        this.service = service;
-    }
 
     @GetMapping("")
     public ResponseEntity<List<EspectaculoDTO>> getAllShows() throws ErrorProcessException {
         return ResponseEntity.ok(service.getAll());
     }
 
-
     @GetMapping("/banners")
-    public ResponseEntity<List<EspectaculoDTO>> getBannerShows(){
-        List<Espectaculo> espectaculos = this.service.getBanners();
-        List<EspectaculoDTO> dtos = espectaculos
-                .stream()
-                .map(EspectaculoMapper::entityToDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<List<EspectaculoDTO>> getBannerShows() throws ErrorProcessException {
+        return ResponseEntity.ok(service.getBanners());
     }
 
-
     @PostMapping("/")
-    public ResponseEntity<?> addShow(@Valid @RequestBody EspectaculoDTO espectaculoDTO) throws ErrorProcessException {
-        Espectaculo eCreado;
-        try {
-            Espectaculo espectaculo = EspectaculoMapper.dtoToEntity(espectaculoDTO);
-            eCreado = service.save(espectaculo);
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e + " : " + e.getMessage());
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("Show creado correctamente.\n" + eCreado.toString());
+    public ResponseEntity<EspectaculoDTO> addShow(@Valid @RequestBody EspectaculoDTO espectaculoDTO)
+            throws ErrorProcessException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(espectaculoDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editarShow(@PathVariable int id, @RequestBody EspectaculoDTO espectaculoDTO){
-        Espectaculo uEspectaculo;
-        try {
-            Espectaculo espectaculo = EspectaculoMapper.dtoToEntity(espectaculoDTO);
-            uEspectaculo = service.update(id, espectaculo);
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e + " : " + e.getMessage());
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("Show editado con éxito.\n" + uEspectaculo);
+    public ResponseEntity<?> editarShow(@PathVariable int id, @RequestBody EspectaculoDTO espectaculoDTO)
+            throws ErrorProcessException{
+        return ResponseEntity.status(HttpStatus.OK).body(service.update(id, espectaculoDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> borrarShow(@PathVariable int id){
-        try {
-            this.service.delete(id);
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public ResponseEntity<String> borrarShow(@PathVariable int id) throws ErrorProcessException{
+            service.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Borrado exitoso del show con ID: " + id);
     }
 }

@@ -4,6 +4,7 @@ import com.entradasonline.entradasonline.entidad.Usuario;
 import com.entradasonline.entradasonline.negocio.dto.UsuarioDTO;
 import com.entradasonline.entradasonline.negocio.dto.mapper.UsuarioMapper;
 import com.entradasonline.entradasonline.servicio.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,11 @@ import java.util.Optional;
 
 @CrossOrigin("http://localhost:4200")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/usuarios")
 @Slf4j
 public class UsuarioController {
     private final UsuarioService service;
-
-    public UsuarioController(UsuarioService service) {
-        this.service = service;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> traerUsuario(@RequestBody UsuarioDTO usuarioDTO){
