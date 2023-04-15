@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +20,6 @@ public class EspectaculoServiceImpl implements EspectaculoService {
 
     private final String ERROR_NOT_FOUND = "An error occurred in the process: ";
     private final EspectaculoJpaRepository repository;
-    private final EspectaculoMapper mapper;
 
     @Override
     public List<EspectaculoDTO> getAll() throws ErrorProcessException {

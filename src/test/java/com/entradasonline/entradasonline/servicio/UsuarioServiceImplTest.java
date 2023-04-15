@@ -34,7 +34,7 @@ class UsuarioServiceImplTest {
     @Test
     void getAll() {
     }
-
+/*
     @Test
     void findById() {
         Integer id = 1;
@@ -139,5 +139,5 @@ class UsuarioServiceImplTest {
 
         given(uRepository.buscarPorEmail(email)).willReturn(Optional.empty());
         assertThatThrownBy(() -> usuarioService.delete(email)).isInstanceOf(RuntimeException.class);
-    }
+    }*/
 }

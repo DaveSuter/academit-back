@@ -15,5 +15,6 @@ public interface UsuarioJpaRepository extends JpaRepository<Usuario, Integer> {
 
 
     @Query("from Usuario u where u.email = ?1 and u.password = ?2")
-    Optional<Usuario> buscarPorEmailYPassword(String email, String password);
+    Usuario buscarPorEmailYPassword(String email, String password);
+
 }

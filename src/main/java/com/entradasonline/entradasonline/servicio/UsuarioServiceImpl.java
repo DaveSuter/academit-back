@@ -2,6 +2,10 @@ package com.entradasonline.entradasonline.servicio;
 
 import com.entradasonline.entradasonline.entidad.DatosUsuario;
 import com.entradasonline.entradasonline.entidad.Usuario;
+import com.entradasonline.entradasonline.exception.BadRequestException;
+import com.entradasonline.entradasonline.exception.ErrorProcessException;
+import com.entradasonline.entradasonline.exception.NotFoundException;
+import com.entradasonline.entradasonline.negocio.dto.UsuarioDTO;
 import com.entradasonline.entradasonline.repositorio.DatosUsuarioJpaRepository;
 import com.entradasonline.entradasonline.repositorio.UsuarioJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,68 +21,86 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final DatosUsuarioJpaRepository datosRepository;
 
     @Override
-    public List<Usuario> getAll() {
-        return (List<Usuario>) this.repository.findAll();
-    }
-
-    @Override
-    public Optional<Usuario> findById(int id) {
-        return this.repository.findById(id);
-    }
-
-    @Override
-    public Optional<Usuario> findByEmail(String email) {
-        return this.repository.findByEmail(email);
-    }
-
-    @Override
-    public Optional<Usuario> findByEmailAndPass(String email, String password) {
-        return this.repository.buscarPorEmailYPassword(email, password);
-    }
-
-    @Override
-    public boolean showExist(String email) {
-        return this.repository.findByEmail(email).isPresent();
-    }
-
-    @Override
-    public Usuario save(Usuario usuario) {
-        if (this.showExist(usuario.getEmail())){
-            throw new RuntimeException(
-                String.format("El usuario con el email s% ya existe", usuario.getEmail())
-            );
+    public List<Usuario> getAll() throws ErrorProcessException {
+        try {
+            return repository.findAll();
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
         }
-        DatosUsuario datosU = datosRepository.save(usuario.getDatosUsuario());
-        usuario.setDatosUsuario(datosU);
-        return this.repository.save(usuario);
     }
 
     @Override
-    public Usuario update(String email, Usuario usuario) {
-        Usuario usuarioUpdate;
-        Optional<Usuario> oUsuario= this.repository.findByEmail(email);
-
-        if (oUsuario.isPresent()){
-            usuarioUpdate = oUsuario.get();
-        } else {
-            throw new RuntimeException("El usuario con email: " + email + " no existe.");
+    public Optional<Usuario> findById(int id) throws ErrorProcessException {
+        try {
+            return repository.findById(id);
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
         }
-
-        usuarioUpdate.setEmail(usuario.getEmail());
-        usuarioUpdate.setPassword(usuario.getPassword());
-
-        return this.repository.save(usuarioUpdate);
     }
 
     @Override
-    public void delete(String email) {
-        Usuario usuario;
-        Optional<Usuario> optionalUsuario = this.repository.findByEmail(email);
-        if (optionalUsuario.isEmpty()){
-            throw new RuntimeException("El usuario con email " + email + " no existe.");
-        } else {
-            usuario = optionalUsuario.get();
+    public Optional<Usuario> findByEmail(String email) throws ErrorProcessException {
+        try {
+            return repository.findByEmail(email);
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
         }
-        this.repository.deleteById(usuario.getIdUsuario());
+    }
+
+    @Override
+    public Usuario findByEmailAndPass(String email, String password) throws ErrorProcessException {
+        try {
+            return repository.buscarPorEmailYPassword(email, password);
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public boolean showExist(String email) throws ErrorProcessException {
+        try {
+            return repository.findByEmail(email).isPresent();
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Usuario save(UsuarioDTO usuarioDto) throws ErrorProcessException {
+        Usuario usuario = repository.buscarPorEmailYPassword(usuarioDto.getEmail(), usuarioDto.getPassword());
+        if (usuario != null){
+            throw new BadRequestException("this user already exist");
+        }
+        try {
+            DatosUsuario datosU = datosRepository.save(usuario.getDatosUsuario());
+            usuario.setDatosUsuario(datosU);
+            return repository.save(usuario);
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Usuario update(String email, UsuarioDTO usuarioDto) throws ErrorProcessException {
+        Usuario usuarioUpdate = repository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("this show cannot found in the database"));
+        try {
+            usuarioUpdate.setEmail(usuarioDto.getEmail());//
+            usuarioUpdate.setPassword(usuarioDto.getPassword());
+            return repository.save(usuarioUpdate);
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(String email) throws ErrorProcessException {
+        Usuario usuario = repository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("this user doesn't exist"));
+        try {
+            repository.deleteById(usuario.getIdUsuario());
+        } catch (RuntimeException ex){
+            throw new ErrorProcessException(ex.getMessage());
+        }
     }
 }
