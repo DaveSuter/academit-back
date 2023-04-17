@@ -6,13 +6,14 @@ import com.entradasonline.entradasonline.exception.BadRequestException;
 import com.entradasonline.entradasonline.exception.ErrorProcessException;
 import com.entradasonline.entradasonline.exception.NotFoundException;
 import com.entradasonline.entradasonline.negocio.dto.UsuarioDTO;
+import com.entradasonline.entradasonline.negocio.dto.mapper.UsuarioMapper;
 import com.entradasonline.entradasonline.repositorio.DatosUsuarioJpaRepository;
 import com.entradasonline.entradasonline.repositorio.UsuarioJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,36 +22,42 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final DatosUsuarioJpaRepository datosRepository;
 
     @Override
-    public List<Usuario> getAll() throws ErrorProcessException {
+    public List<UsuarioDTO> getAll() throws ErrorProcessException {
         try {
-            return repository.findAll();
+            return repository.findAll().stream()
+                    .map(UsuarioMapper::entityToDto)
+                    .collect(Collectors.toList());
         } catch (RuntimeException ex){
             throw new ErrorProcessException(ex.getMessage());
         }
     }
 
     @Override
-    public Optional<Usuario> findById(int id) throws ErrorProcessException {
+    public UsuarioDTO findById(int id) throws ErrorProcessException {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not found user"));
         try {
-            return repository.findById(id);
+            return UsuarioMapper.entityToDto(usuario);
         } catch (RuntimeException ex){
             throw new ErrorProcessException(ex.getMessage());
         }
     }
 
     @Override
-    public Optional<Usuario> findByEmail(String email) throws ErrorProcessException {
+    public UsuarioDTO findByEmail(String email) throws ErrorProcessException {
+        Usuario usuario = repository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Not found user"));
         try {
-            return repository.findByEmail(email);
+            return UsuarioMapper.entityToDto(usuario);
         } catch (RuntimeException ex){
             throw new ErrorProcessException(ex.getMessage());
         }
     }
 
     @Override
-    public Usuario findByEmailAndPass(String email, String password) throws ErrorProcessException {
+    public UsuarioDTO findByEmailAndPass(String email, String password) throws ErrorProcessException {
         try {
-            return repository.buscarPorEmailYPassword(email, password);
+            return UsuarioMapper.entityToDto(repository.buscarPorEmailYPassword(email, password));
         } catch (RuntimeException ex){
             throw new ErrorProcessException(ex.getMessage());
         }
@@ -66,7 +73,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario save(UsuarioDTO usuarioDto) throws ErrorProcessException {
+    public UsuarioDTO save(UsuarioDTO usuarioDto) throws ErrorProcessException {
         Usuario usuario = repository.buscarPorEmailYPassword(usuarioDto.getEmail(), usuarioDto.getPassword());
         if (usuario != null){
             throw new BadRequestException("this user already exist");
@@ -74,20 +81,20 @@ public class UsuarioServiceImpl implements UsuarioService {
         try {
             DatosUsuario datosU = datosRepository.save(usuario.getDatosUsuario());
             usuario.setDatosUsuario(datosU);
-            return repository.save(usuario);
+            return UsuarioMapper.entityToDto(repository.save(usuario));
         } catch (RuntimeException ex){
             throw new ErrorProcessException(ex.getMessage());
         }
     }
 
     @Override
-    public Usuario update(String email, UsuarioDTO usuarioDto) throws ErrorProcessException {
+    public UsuarioDTO update(String email, UsuarioDTO usuarioDto) throws ErrorProcessException {
         Usuario usuarioUpdate = repository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("this show cannot found in the database"));
         try {
             usuarioUpdate.setEmail(usuarioDto.getEmail());//
             usuarioUpdate.setPassword(usuarioDto.getPassword());
-            return repository.save(usuarioUpdate);
+            return UsuarioMapper.entityToDto(repository.save(usuarioUpdate));
         } catch (RuntimeException ex){
             throw new ErrorProcessException(ex.getMessage());
         }

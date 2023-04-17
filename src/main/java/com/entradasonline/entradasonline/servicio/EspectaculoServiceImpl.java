@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class EspectaculoServiceImpl implements EspectaculoService {
 
     private final String ERROR_NOT_FOUND = "An error occurred in the process: ";
+    private final String MESSAGE_NOT_FOUND = "this show cannot found in the database";
     private final EspectaculoJpaRepository repository;
 
     @Override
@@ -47,7 +48,7 @@ public class EspectaculoServiceImpl implements EspectaculoService {
     @Override
     public EspectaculoDTO findById(int id) throws ErrorProcessException {
         Espectaculo espectaculo = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("this show cannot found in the database"));
+                .orElseThrow(() -> new NotFoundException(MESSAGE_NOT_FOUND));
         try {
             return EspectaculoMapper.entityToDto(espectaculo); //utilizo el mapper en lugar del builder
         } catch (RuntimeException ex){
@@ -58,7 +59,7 @@ public class EspectaculoServiceImpl implements EspectaculoService {
     @Override
     public EspectaculoDTO findByNombre(String nombre) throws ErrorProcessException {
         Espectaculo espectaculo = repository.findByNombre(nombre)
-                .orElseThrow(() -> new NotFoundException("this show cannot found in the database"));
+                .orElseThrow(() -> new NotFoundException(MESSAGE_NOT_FOUND));
         try {
             return EspectaculoMapper.entityToDto(espectaculo);
         } catch (RuntimeException ex){
@@ -91,9 +92,9 @@ public class EspectaculoServiceImpl implements EspectaculoService {
 
     @Transactional
     @Override
-    public Espectaculo update(int id, EspectaculoDTO espectaculoDto) throws ErrorProcessException {
+    public EspectaculoDTO update(int id, EspectaculoDTO espectaculoDto) throws ErrorProcessException {
         Espectaculo espectaculoUpdate = repository.findByIdshow(id)
-                .orElseThrow(() -> new NotFoundException("this show cannot found in the database"));
+                .orElseThrow(() -> new NotFoundException(MESSAGE_NOT_FOUND));
         try{
             espectaculoUpdate.setNombre(espectaculoDto.getNombre());
             espectaculoUpdate.setDescripcion(espectaculoDto.getDescripcion());
@@ -102,7 +103,7 @@ public class EspectaculoServiceImpl implements EspectaculoService {
             espectaculoUpdate.setImgBaner(espectaculoDto.getImgbaner());
             espectaculoUpdate.setGenero(espectaculoDto.getGenero());
             espectaculoUpdate.setRecinto(espectaculoDto.getRecinto());
-            return repository.save(espectaculoUpdate);
+            return EspectaculoMapper.entityToDto(repository.save(espectaculoUpdate));
         } catch (RuntimeException ex){
             throw new ErrorProcessException(ERROR_NOT_FOUND + ex.getMessage());
         }

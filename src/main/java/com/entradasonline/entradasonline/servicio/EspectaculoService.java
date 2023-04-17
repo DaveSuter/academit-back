@@ -16,7 +16,7 @@ public interface EspectaculoService {
     EspectaculoDTO findByNombre(String nombre) throws ErrorProcessException;
     boolean showExist(int id) throws ErrorProcessException;
     EspectaculoDTO save(EspectaculoDTO espectaculoDto) throws ErrorProcessException;
-    Espectaculo update(int id, EspectaculoDTO espectaculoDto) throws ErrorProcessException;
+    EspectaculoDTO update(int id, EspectaculoDTO espectaculoDto) throws ErrorProcessException;
     void delete(int id) throws ErrorProcessException;
 
 }

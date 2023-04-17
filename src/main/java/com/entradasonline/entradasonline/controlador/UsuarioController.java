@@ -22,18 +22,18 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @PostMapping("/login")
-    public ResponseEntity<?> traerUsuario(@RequestBody UsuarioDTO usuarioDTO) throws ErrorProcessException {
+    public ResponseEntity<UsuarioDTO> traerUsuario(@RequestBody UsuarioDTO usuarioDTO) throws ErrorProcessException {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(service.findByEmailAndPass(usuarioDTO.getEmail(), usuarioDTO.getPassword()));
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> altaUsuario(@Valid @RequestBody UsuarioDTO usuarioDto) throws ErrorProcessException {
+    public ResponseEntity<UsuarioDTO> altaUsuario(@Valid @RequestBody UsuarioDTO usuarioDto) throws ErrorProcessException {
         return ResponseEntity.status(HttpStatus.OK).body(service.save(usuarioDto));
     }
 
     @PutMapping("/{email}")
-    public ResponseEntity<?> modificarUsuario(@PathVariable String email, @RequestBody UsuarioDTO usuarioDTO)
+    public ResponseEntity<UsuarioDTO> modificarUsuario(@PathVariable String email, @RequestBody UsuarioDTO usuarioDTO)
             throws ErrorProcessException {
         return ResponseEntity.status(HttpStatus.OK).body(service.update(email, usuarioDTO));
     }

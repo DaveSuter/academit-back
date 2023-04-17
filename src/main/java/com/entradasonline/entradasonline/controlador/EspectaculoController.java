@@ -3,7 +3,6 @@ package com.entradasonline.entradasonline.controlador;
 import com.entradasonline.entradasonline.entidad.Espectaculo;
 import com.entradasonline.entradasonline.exception.ErrorProcessException;
 import com.entradasonline.entradasonline.negocio.dto.EspectaculoDTO;
-import com.entradasonline.entradasonline.negocio.dto.mapper.EspectaculoMapper;
 import com.entradasonline.entradasonline.servicio.EspectaculoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin("http://localhost:4200")
 @RestController
@@ -39,7 +37,7 @@ public class EspectaculoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editarShow(@PathVariable int id, @RequestBody EspectaculoDTO espectaculoDTO)
+    public ResponseEntity<EspectaculoDTO> editarShow(@PathVariable int id, @RequestBody EspectaculoDTO espectaculoDTO)
             throws ErrorProcessException{
         return ResponseEntity.status(HttpStatus.OK).body(service.update(id, espectaculoDTO));
     }

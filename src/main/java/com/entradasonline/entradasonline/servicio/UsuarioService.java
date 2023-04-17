@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioService {
-    List<Usuario> getAll() throws ErrorProcessException;
-    Optional<Usuario> findById(int id) throws ErrorProcessException;
-    Optional<Usuario> findByEmail(String email) throws ErrorProcessException;
-    Usuario findByEmailAndPass(String email, String password) throws ErrorProcessException;
+    List<UsuarioDTO> getAll() throws ErrorProcessException;
+    UsuarioDTO findById(int id) throws ErrorProcessException;
+    UsuarioDTO findByEmail(String email) throws ErrorProcessException;
+    UsuarioDTO findByEmailAndPass(String email, String password) throws ErrorProcessException;
     boolean showExist(String email) throws ErrorProcessException;
-    Usuario save(UsuarioDTO usuarioDto) throws ErrorProcessException;
-    Usuario update(String email, UsuarioDTO usuarioDto) throws ErrorProcessException;
+    UsuarioDTO save(UsuarioDTO usuarioDto) throws ErrorProcessException;
+    UsuarioDTO update(String email, UsuarioDTO usuarioDto) throws ErrorProcessException;
     void delete(String email) throws ErrorProcessException;
 }
